@@ -1,0 +1,16 @@
+{
+  "id": "3258567",
+  "name": "cloud-music-font",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-myMusic",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "3979426",
+      "name": "音乐娱乐",
+      "font_class": "yinleyule",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    }
+  ]
+}

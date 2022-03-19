@@ -1,0 +1,19 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3258567 */
+  src: url('iconfont.woff2?t=1647599332071') format('woff2'),
+        url('iconfont.woff?t=1647599332071') format('woff'),
+        url('iconfont.ttf?t=1647599332071') format('truetype');
+}
+
+.iconfont,[class^="el-icon-myMusic"],[class*=" el-icon-myMusic"] {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.el-icon-myMusicyinleyule:before {
+  content: "\e617";
+}
+

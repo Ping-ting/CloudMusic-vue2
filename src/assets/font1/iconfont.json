@@ -1,0 +1,30 @@
+{
+  "id": "3258567",
+  "name": "cloud-music-font",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-myMusic",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "11882841",
+      "name": "bg-left",
+      "font_class": "bg-left",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "11882936",
+      "name": "bg-right",
+      "font_class": "bg-right",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "3979426",
+      "name": "音乐娱乐",
+      "font_class": "yinleyule",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    }
+  ]
+}
