@@ -25,7 +25,7 @@ export default {
 }
 #header-logo>a{
   text-decoration: none;
-  color: #fff;
+  color: #c8f0e9;
   font-size: 18px;
   line-height: 60px;
 }

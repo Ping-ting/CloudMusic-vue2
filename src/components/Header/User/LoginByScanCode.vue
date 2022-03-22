@@ -6,8 +6,18 @@
         <img id="left-img" src="@/assets/images/left-img.png">
       </div>
       <div class="right-code-outer">
-        <img id="right-code" src="@/assets/images/code.png" >
-        <p>使用<a href="https://music.163.com/#/download">网易云音乐APP</a>扫码登录</p>
+        <div id="right-code">
+          <img :src="QRBase64">
+          <div class="code-invalid" v-if="codeIsValid === false">
+            <p>二维码已失效</p>
+            <h5><el-button type="primary" size="mini" @click="afreshGetQR()">点击刷新</el-button></h5>
+          </div>
+          <div class="code-loading" v-if="codeIsLoading === true">
+            <p><i class="el-icon-loading"></i></p>
+            <p>登录中...... </p>
+          </div>
+        </div>
+        <p>使用<a href="https://music.163.com/#/download">PT音乐</a>APP版本扫码登录</p>
       </div>
     </div>
     <router-link to="/loginphone" class="other-way">选择其他登录模式 ></router-link>
@@ -15,18 +25,96 @@
 </template>
 
 <script>
-export default {
+// 导入获取 key 和 QR 的 API
+import { getLoginQRKey, getLoginQR, getLoginStatus, checkStatus } from '@/api/LoginAndRegister/loginByQR.js'
+// 导入 user.js
+import { getUserAccount } from '@/api/user/user.js'
 
+export default {
+  props: {
+    loginVisible: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    return {
+      codeIsValid: true,
+      codeIsLoading: false,
+      QRkey: '',
+      QRBase64: '',
+      cookier: ''
+    }
+  },
+  methods: {
+    // 获取登录二维码
+    async getLoginQRImg () {
+      // 获取 key
+      const { data: dataKeyObj } = await getLoginQRKey()
+      const keyObj = dataKeyObj.data
+      this.QRkey = keyObj.unikey
+      console.log('二维码的key:', keyObj.unikey)
+
+      // 获取 二维码
+      const { data: dataQRObj } = await getLoginQR(this.QRkey)
+      const QRObj = dataQRObj.data
+      this.QRBase64 = QRObj.qrimg
+      console.log('二维码base64格式:', QRObj.qrimg)
+
+      // 循环判断二维码是否过期  是否已经登录
+      const timer = setInterval(async () => {
+        // loginVisible 为 true 时定时器才有效
+        // 当 dialog 被删除时 定时器被消除
+        if (this.loginVisible === false) {
+          clearInterval(timer)
+        }
+        const { data: keyStatus } = await checkStatus(this.QRkey)
+        console.log(keyStatus)
+        if (keyStatus.code === 800) {
+          // 二维码过期
+          console.log('二维码已失效')
+          this.codeIsLoading = false
+          clearInterval(timer)
+          this.codeIsValid = false
+        } else if (keyStatus.code === 802) {
+          // 授权登录中
+          console.log('授权登录中...')
+          this.codeIsLoading = true
+        } else if (keyStatus.code === 803) {
+          this.codeIsLoading = false
+          // 登录成功 会返回 cookie
+          console.log('登录成功')
+          clearInterval(timer)
+          const { data: loginStatus } = await getLoginStatus()
+          console.log(loginStatus)
+          this.cookier = keyStatus.cookie
+          const { data: userAccount } = await getUserAccount(this.cookier)
+          console.log(userAccount)
+        }
+      }, 3000)
+    },
+    // 重新获取二维码
+    afreshGetQR () {
+      console.log('重新获取二维码')
+      this.getLoginQRImg()
+      this.codeIsValid = true
+    }
+  },
+  created () {
+    this.getLoginQRImg()
+  }
 }
 </script>
 
 <style lang="less" scoped>
+// 扫码登录 标题
 #login-code-container .title{
   margin-top: 30px;
   font-size: 28px;
   text-align: center;
   color: #3c3c3c;
 }
+// 选择其他登录模式 样式
 #login-code-container .other-way{
   display: inline-block;
   margin: 30px 0 25px 0;
@@ -38,25 +126,28 @@ export default {
   color: rgba(0,0,0,0.80);
   text-decoration: none;
 }
+// 选择其他登录模式hover 样式
 #login-code-container .other-way:hover{
-  text-decoration: #3c3c3c;
+  text-decoration-line:underline;
 }
+// 中间主体扫码样式
 #login-code-container .main-outer{
   height: 250px;
   margin-top: 40px;
-  background-color: rgb(209, 169, 169);
+  // background-color: rgb(209, 169, 169);
 }
+// 左边图片外框 右边二维码外框
 .left-img-outer,.right-code-outer{
   display: inline-block;
   width: 45%;
 }
 .left-img-outer{
-  background-color: rgb(174, 218, 138);
+  // background-color: rgb(174, 218, 138);
 }
 .right-code-outer{
   float: right;
   padding: 20px 0;
-  background-color: rgb(218, 210, 147);
+  // background-color: rgb(218, 210, 147);
 }
 .right-code-outer>p{
   text-align: center;
@@ -72,7 +163,44 @@ export default {
 #right-code{
   width: 100%;
   height: 135px;
-  background-color: rgb(238, 234, 175);
+  // background-color: rgb(238, 234, 175);
   margin: 10px 0;
+  position: relative;
+}
+#right-code img{
+  width: 100%;
+}
+#right-code .code-invalid{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  background-color: rgba(5, 5, 5, 0.7);
+}
+
+.code-invalid p{
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  margin: 30% 0 10%;
+}
+.code-invalid h5{
+  text-align: center;
+}
+#right-code .code-loading{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  background-color: rgba(253, 253, 253, 0.9);
+}
+.code-loading i{
+  margin-top: 35%;
+  font-size: 20px;
+}
+.code-loading p{
+  line-height: 20px;
+  text-align: center;
+  color: #3c3c3c;
 }
 </style>

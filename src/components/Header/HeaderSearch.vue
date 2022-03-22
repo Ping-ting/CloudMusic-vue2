@@ -9,7 +9,6 @@
         size="mini"
         placeholder="搜索喜欢的音乐"
         prefix-icon="el-icon-search"
-        v-model="input2"
         >
       </el-input>
     </div>

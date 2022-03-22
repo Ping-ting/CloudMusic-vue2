@@ -6,8 +6,17 @@
         <router-link class="noLoginA" to="/logincode">未登录 </router-link>
         <i class="el-icon-caret-bottom"></i>
       </el-button>
-      <el-dialog :visible.sync="loginVisible" center :append-to-body='true' :lock-scroll="false" width="350px">
-        <router-view></router-view>
+      <el-dialog
+      center
+      width="350px"
+      :visible.sync="loginVisible"
+      :append-to-body='true'
+      :lock-scroll="true"
+      :before-close='beforeClose()'
+      >
+        <router-view
+        :loginVisible="loginVisible"
+        ></router-view>
       </el-dialog>
     </div>
     <span class="other-outer">
@@ -24,6 +33,11 @@ export default {
     return {
       isLogin: false,
       loginVisible: false
+    }
+  },
+  methods: {
+    beforeClose () {
+
     }
   }
 }
