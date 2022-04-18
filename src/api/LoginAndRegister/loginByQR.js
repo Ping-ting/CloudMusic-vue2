@@ -1,4 +1,4 @@
-// 注册相关的 API 接口
+// 通过二维码登录相关的 API 接口
 import request from '@/utils/request.js'
 
 // 每次请求都带上时间戳 timestamp 参数  防止缓存

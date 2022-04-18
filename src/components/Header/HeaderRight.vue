@@ -1,7 +1,7 @@
 <template>
   <div id="header-right-container">
     <div class="user-header-outer" v-if="isLogin === false">
-      <i class="el-icon-user"></i>
+      <el-avatar class="avatar"  icon="el-icon-user-solid" :size="'medium'" ></el-avatar>
       <el-button class="noLogin" type="text" @click="loginVisible = true">
         <router-link class="noLoginA" to="/logincode">未登录 </router-link>
         <i class="el-icon-caret-bottom"></i>
@@ -39,6 +39,18 @@ export default {
     beforeClose () {
 
     }
+  },
+  // 监听路由变化
+  // 当路由从 /logincode 跳转到 /loginphone 或/register 将loginVisible变成 false
+  watch: {
+    '$route' (to, from) {
+      console.log(from.path)
+      // 下面的数据传送到子组件会有延迟
+      // if (from.path === '/logincode') {
+      //   console.log('从扫码页跳转出去了')
+      //   this.codeVisible = false
+      // }
+    }
   }
 }
 </script>
@@ -73,17 +85,9 @@ export default {
   display: inline-block;
   width: 50%;
 }
-.user-header-outer>i{
-  border: 1px solid #c8f0e9;
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  border-radius: 15px;
-  background-color: #d4d4d4;
-  line-height: 30px;
-  text-align: center;
-  font-size: 20px;
-  color: rgb(248, 248, 248);
+.user-header-outer>.avatar{
+  margin-top: 10px;
+  vertical-align: -10px;
 }
 .el-dropdown-link {
     cursor: pointer;

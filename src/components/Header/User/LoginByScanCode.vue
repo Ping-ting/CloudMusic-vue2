@@ -27,11 +27,10 @@
 <script>
 // 导入获取 key 和 QR 的 API
 import { getLoginQRKey, getLoginQR, getLoginStatus, checkStatus } from '@/api/LoginAndRegister/loginByQR.js'
-// 导入 user.js
-import { getUserAccount } from '@/api/user/user.js'
 
 export default {
   props: {
+    // 登录弹框是否存在
     loginVisible: {
       type: Boolean,
       default: false
@@ -39,6 +38,8 @@ export default {
   },
   data () {
     return {
+    // 当前是否在扫描二维码页面
+      codeVisible: true,
       codeIsValid: true,
       codeIsLoading: false,
       QRkey: '',
@@ -47,6 +48,14 @@ export default {
     }
   },
   methods: {
+    // 登录成功提示信息
+    successLoginMsg () {
+      this.$message({
+        showClose: true,
+        message: '登录成功！',
+        type: 'success'
+      })
+    },
     // 获取登录二维码
     async getLoginQRImg () {
       // 获取 key
@@ -67,6 +76,12 @@ export default {
         // 当 dialog 被删除时 定时器被消除
         if (this.loginVisible === false) {
           clearInterval(timer)
+          console.log('弹框不在')
+        }
+        console.log('this.codeVisible:', this.codeVisible)
+        if (this.codeVisible === false) {
+          clearInterval(timer)
+          console.log('不在扫码页')
         }
         const { data: keyStatus } = await checkStatus(this.QRkey)
         console.log(keyStatus)
@@ -85,11 +100,9 @@ export default {
           // 登录成功 会返回 cookie
           console.log('登录成功')
           clearInterval(timer)
+          this.successLoginMsg()
           const { data: loginStatus } = await getLoginStatus()
           console.log(loginStatus)
-          this.cookier = keyStatus.cookie
-          const { data: userAccount } = await getUserAccount(this.cookier)
-          console.log(userAccount)
         }
       }, 3000)
     },
@@ -102,6 +115,19 @@ export default {
   },
   created () {
     this.getLoginQRImg()
+    // ----------------以下无效------------
+    // 组件被创建的时候 监听 window 对象的 onhashchange 事件
+    // 当前不在 /logincode
+    // window.onhashchange = () => {
+    //   console.log('hash变化')
+    //   if (location.hash !== '/logincode') {
+    //     this.codeVisible = false
+    //   }
+    // }
+  },
+  beforeDestroy () {
+    // 当前组件被销毁之前 将codeVisible设置为false 用于消除定时器
+    this.codeVisible = false
   }
 }
 </script>

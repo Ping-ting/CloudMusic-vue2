@@ -33,6 +33,6 @@ export default {
   font-size: 20px;
   vertical-align: -1px;
   margin-right: 5px;
-  color: rgb(235, 251, 250);
+  color: #e1efed;
 }
 </style>

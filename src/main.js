@@ -4,6 +4,7 @@ import store from './store'
 //  element ui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import '../theme/index.css'
 // icon
 import './assets/font/iconfont.css'
 import './assets/font1/iconfont.css'
